@@ -14,6 +14,12 @@ class CatalogService {
     return await ProductModel.findById(id).exec();
   }
 
+  static async updateProductById(id: string, update: Partial<Product>) {
+    return await ProductModel.findByIdAndUpdate(id, update, {
+      new: true,
+    }).exec();
+  }
+
   static async removeProduct(id: string) {
     return await ProductModel.deleteOne({ _id: id }).exec();
   }
