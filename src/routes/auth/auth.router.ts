@@ -1,62 +1,49 @@
 import express from 'express';
-import passport from 'passport';
-import LocalStrategy from 'passport-local';
+import AuthService from '../../services/AuthService';
 
 import { IUser } from '../../models/users/user.mongo';
 import UserService from '../../services/UserService';
+import { checkAuth } from '../../lib/checkauth';
+
+const hideSensetiveData = (data: IUser): Partial<IUser> => {
+  const { email, username, role } = data;
+
+  return {
+    email,
+    username,
+    role,
+  };
+};
 
 const authRouter = express.Router();
 
-passport.use(
-  // @ts-ignore comment
-  new LocalStrategy(async function verify(
-    username: string,
-    password: string,
-    cb: Function
-  ) {
-    try {
-      const checkUser = await UserService.authenticate(username, password);
-      if (!checkUser) {
-        return cb(null, false, {
-          message: 'Incorrect username or password.',
-        });
-      }
-      return cb(null, checkUser);
-    } catch (error) {
-      return cb(error);
-    }
-  })
-);
+authRouter.post('/login/password', async (req, res) => {
+  console.log(req.body);
+  const checkedUser = await UserService.authenticate(
+    req.body.username,
+    req.body.password
+  );
 
-passport.serializeUser<IUser>(function (user, cb) {
-  process.nextTick(function () {
-    // @ts-ignore
-    cb(null, { id: user.id, username: user.username });
-  });
+  if (checkedUser) {
+    const userData = hideSensetiveData(checkedUser.toObject());
+    const token = await AuthService.login(userData);
+    res.cookie('Authorization', `Bearer ${token}`, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+    res.cookie('user', JSON.stringify(userData), {
+      sameSite: 'none',
+    });
+    return res.json(userData);
+  } else {
+    return res.status(400).json('Invalid login or password');
+  }
 });
 
-passport.deserializeUser<IUser>(function (user, cb) {
-  process.nextTick(function () {
-    return cb(null, user);
-  });
+authRouter.get('/login/validate', checkAuth, async (req, res) => {
+  return res.json(hideSensetiveData(res.locals.user as IUser));
 });
-
-// authRouter.get('/', (req, res) => {
-//   console.log(req);
-//   return res.json(req);
-// });
-
-// authRouter.get('/login', (req, res) => {
-//   return res.json('Please log in');
-// });
-
-authRouter.post(
-  '/login/password',
-  passport.authenticate('local', {
-    successRedirect: '/admin',
-    failureRedirect: '/admin/login',
-  })
-);
 
 authRouter.post('/createUser', async (req, res, next) => {
   try {
@@ -67,12 +54,12 @@ authRouter.post('/createUser', async (req, res, next) => {
   }
 });
 
-authRouter.post('/logout', function (req, res, next) {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.redirect('/');
+authRouter.get('/logout', function (req, res, next) {
+  res.clearCookie('Authorization', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
   });
+  return res.json({ message: 'Log out success' });
 });
 export default authRouter;

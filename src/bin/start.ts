@@ -1,12 +1,29 @@
 import http from 'http';
+import https from 'https';
+
+import fs from 'fs';
+import path from 'path';
 import app from '../app';
 
 import 'dotenv/config';
 import { connectMongo } from '../lib/mongo';
 
 const PORT = process.env.PORT || 8000;
+const RENDER_COM = process.env.RENDER_COM;
 
-const server = http.createServer(app);
+const server = !RENDER_COM
+  ? https.createServer(
+      {
+        key: fs.readFileSync(
+          path.join(__dirname, '..', '..', 'server-key.pem')
+        ),
+        cert: fs.readFileSync(
+          path.join(__dirname, '..', '..', 'server-cert.pem')
+        ),
+      },
+      app
+    )
+  : http.createServer(app);
 
 server.on('listening', () => {
   const addr = server.address();
