@@ -1,25 +1,43 @@
 import UserModel, { IUser } from '../models/users/user.mongo';
 
 class UserService {
-  static async getOne(userId: string) {
-    return UserModel.findById(userId).exec();
+  static async getOne(username: string) {
+    return UserModel.findOne({ username }, [
+      'email',
+      'username',
+      'role',
+      '-_id',
+    ]).exec();
   }
 
   static async getAll() {
-    return UserModel.find({}).sort({ createdAt: -1 });
+    return UserModel.find({}, ['email', 'username', 'role', '-_id']).sort({
+      createdAt: -1,
+    });
   }
 
   static async create(data: Omit<IUser, 'salt'>) {
+    const isUsernameUsed = await UserModel.exists({
+      username: data.username,
+    });
+    if (isUsernameUsed) throw new Error('Username already used');
+    const isEmailUsed = await UserModel.exists({ email: data.email });
+    if (isEmailUsed) throw new Error('Email already used');
+
     const user = new UserModel(data);
     return user.save();
   }
 
-  static async remove(id: string) {
-    return UserModel.deleteOne({ _id: id }).exec();
+  static async remove(username: string) {
+    const isUsernameExist = await UserModel.exists({
+      username: username,
+    });
+    if (!isUsernameExist) throw new Error('Username does`nt exists');
+    return UserModel.deleteOne({ username }).exec();
   }
 
-  static async update(id: string, data: IUser) {
-    let user = await UserModel.findById(id);
+  static async update(username: string, data: IUser) {
+    let user = await UserModel.findOne({ username });
     if (!user) return false;
     for (let key in data) {
       // @ts-ignore comment

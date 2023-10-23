@@ -34,6 +34,7 @@ const UserSchema = new Schema<IUser, TUserModel, IUserMethods>(
       index: { unique: true },
       lowercase: true,
       trim: true,
+      unique: true,
     },
     email: {
       // Trim and lowercase
@@ -42,6 +43,7 @@ const UserSchema = new Schema<IUser, TUserModel, IUserMethods>(
       index: { unique: true },
       lowercase: true,
       trim: true,
+      unique: true,
     },
     password: {
       type: String,
