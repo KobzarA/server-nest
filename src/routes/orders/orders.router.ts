@@ -24,7 +24,6 @@ ordersRouter.post('/', async (req, res) => {
     const order = await OrderService.saveOrder(req.body);
     res.status(201).json(order);
   } catch (error) {
-    console.error(error);
     res.status(503);
   }
 });
@@ -36,7 +35,6 @@ ordersRouter.put('/:id', async (req, res) => {
     );
     res.status(200).json(updatedOrder);
   } catch (error) {
-    console.error(error);
     res.status(503);
   }
 });
@@ -46,7 +44,6 @@ ordersRouter.delete('/:id', async (req, res) => {
     const removedOrder = await OrderService.removeOrder(req.params.id);
     res.status(200).json(removedOrder);
   } catch (error) {
-    console.error(error);
     res.status(503);
   }
 });

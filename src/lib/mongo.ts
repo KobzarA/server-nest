@@ -6,8 +6,7 @@ const dbName = process.env.DB_NAME as string;
 async function connectMongo() {
   try {
     await mongoose.connect(`${url}${dbName}`);
-    console.info(mongoose.connection.db.namespace);
-    console.info('MongoDB connected');
+    console.info('MongoDB connected', mongoose.connection.db.namespace);
   } catch (error) {
     console.error('Connection to MongoDB failed:/n', error);
   }

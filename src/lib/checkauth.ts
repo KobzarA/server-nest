@@ -4,11 +4,9 @@ import { privateJWTKey } from '../config';
 import { IUser } from '../models/users/user.mongo';
 
 const checkAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.cookies.Authorization)
-    res
-      .status(403)
-      .json({ message: 'Please log in!' })
-      .redirect('/admin/login');
+  if (!req.cookies.Authorization) {
+    res.status(403).send({ message: 'Please log in!' });
+  }
   const token = req.cookies.Authorization.split(' ')[1];
   //@ts-ignore
   jwt.verify(
@@ -17,8 +15,20 @@ const checkAuth = (req: Request, res: Response, next: NextFunction) => {
     { complete: false },
 
     function (err: VerifyErrors | null, user: IUser) {
-      if (err) return res.status(403).json(err).redirect('back');
-      if (user.role === 'client') return res.sendStatus(403).redirect('back');
+      if (err) {
+        res.clearCookie('Authorization', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+        });
+        return res.status(403).send({
+          success: false,
+          message: err.message,
+        });
+      } else if (user.role === 'client')
+        return res
+          .sendStatus(403)
+          .send({ success: false, message: 'Access forbiden' });
       res.locals.user = user;
       return next();
     }

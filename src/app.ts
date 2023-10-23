@@ -1,16 +1,13 @@
 import path from 'path';
 
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { checkAuth } from './lib/checkauth';
 import 'dotenv/config';
-
-import adminClient from './routes/adminClient';
 import api_v1 from './routes/api_v1';
-import mongoose from 'mongoose';
 
 const app = express();
 
@@ -39,7 +36,6 @@ app.use((req, res, next) => {
 app.use('/v1', api_v1);
 app.use(express.static(path.join(__dirname, '..', 'public', 'admin')));
 
-// app.get('/admin', adminClient);
 app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
 });
