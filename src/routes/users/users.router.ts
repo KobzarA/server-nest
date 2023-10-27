@@ -14,7 +14,7 @@ usersRouter.get('/', async (req, res) => {
         message: 'No users data found',
       });
     }
-    return res.status(200).json({ success: true, users: users });
+    return res.status(200).json({ success: true, data: users });
   } catch (error) {
     return res
       .status(500)
@@ -32,7 +32,7 @@ usersRouter.get('/:username', async (req, res) => {
       });
     }
 
-    return res.status(200).json({ success: true, user: user });
+    return res.status(200).json({ success: true, data: user });
   } catch (error) {
     return res
       .status(500)
@@ -45,7 +45,7 @@ usersRouter.post('/createUser', async (req, res, next) => {
     const newUser = await UserService.create(req.body);
     return res.status(201).json({
       success: true,
-      user: hideSensetiveUserData(newUser),
+      data: hideSensetiveUserData(newUser),
     });
   } catch (error) {
     if (error instanceof Error) {
@@ -61,7 +61,7 @@ usersRouter.delete('/:username', async (req, res) => {
     const deletedUser = await UserService.remove(req.params.username);
     res
       .status(200)
-      .json({ success: true, user: `User ${req.params.username} deleted` });
+      .json({ success: true, data: `User ${req.params.username} deleted` });
   } catch (error) {
     if (error instanceof Error && error.message === 'Username does`nt exists')
       return res.status(400).json({ success: false, message: error.message });
@@ -80,7 +80,7 @@ usersRouter.put('/:username', async (req, res) => {
         .json({ success: false, message: 'User is not exists' });
     return res
       .status(200)
-      .json({ success: true, user: `User ${req.params.username} updated` });
+      .json({ success: true, data: `User ${req.params.username} updated` });
   } catch (error) {
     if (error instanceof MongooseError) {
       return res.status(500).json({ success: false, message: error.message });

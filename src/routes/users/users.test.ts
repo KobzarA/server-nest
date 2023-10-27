@@ -32,7 +32,7 @@ describe('Users API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          user: {
+          data: {
             username: 'test',
             role: 'admin',
             email: 'test@test.com',
@@ -126,7 +126,7 @@ describe('Users API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          user: 'User test updated',
+          data: 'User test updated',
         })
       );
     });
@@ -156,7 +156,7 @@ describe('Users API', () => {
     //   expect(res.body).toEqual(
     //     expect.objectContaining({
     //       success: true,
-    //       user: 'User test updated',
+    //       data: 'User test updated',
     //     })
     //   );
     // });
@@ -173,7 +173,7 @@ describe('Users API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          user: 'User test deleted',
+          data: 'User test deleted',
         })
       );
     });
@@ -203,7 +203,7 @@ describe('Users API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          users: [
+          data: [
             {
               email: 'admin@admin.com',
               role: 'admin',
@@ -246,7 +246,7 @@ describe('Users API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          user: {
+          data: {
             email: 'admin@test.com',
             role: 'admin',
             username: 'admin',
