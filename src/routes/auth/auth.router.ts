@@ -22,7 +22,7 @@ authRouter.post('/login/password', async (req, res) => {
       secure: true,
       sameSite: 'none',
     });
-    return res.status(200).json({ success: true, user: userData });
+    return res.status(200).json({ success: true, data: userData });
   } else {
     return res.status(400).json({
       success: false,
@@ -34,7 +34,7 @@ authRouter.post('/login/password', async (req, res) => {
 authRouter.get('/login/validate', checkAuth, async (req, res) => {
   return res.json({
     success: true,
-    user: hideSensetiveUserData(res.locals.user as IUser),
+    data: hideSensetiveUserData(res.locals.user as IUser),
   });
 });
 
@@ -44,6 +44,6 @@ authRouter.get('/logout', (req, res, next) => {
     secure: true,
     sameSite: 'none',
   });
-  return res.json({ success: true, message: 'Log out success' });
+  return res.json({ success: true, data: 'Log out success' });
 });
 export default authRouter;

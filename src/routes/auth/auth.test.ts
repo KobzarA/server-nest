@@ -42,7 +42,7 @@ describe('Auth API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          user: { email: 'admin@test.com', role: 'admin', username: 'admin' },
+          data: { email: 'admin@test.com', role: 'admin', username: 'admin' },
         })
       );
     });
@@ -70,7 +70,7 @@ describe('Auth API', () => {
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
-          user: { username: 'admin', role: 'admin', email: 'admin@admin.com' },
+          data: { username: 'admin', role: 'admin', email: 'admin@admin.com' },
         })
       );
     });

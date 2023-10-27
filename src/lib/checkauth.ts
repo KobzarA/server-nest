@@ -5,7 +5,10 @@ import { IUser } from '../models/users/user.mongo';
 
 const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   if (!req.cookies.Authorization) {
-    res.status(403).send({ message: 'Please log in!' });
+    return res.status(403).json({
+      success: false,
+      message: 'Please log in',
+    });
   }
   const token = req.cookies.Authorization.split(' ')[1];
   //@ts-ignore
