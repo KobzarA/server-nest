@@ -15,7 +15,11 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: ['https://localhost:3000', 'http://localhost:3000'],
+    origin: [
+      'https://localhost:3000',
+      'http://localhost:3000',
+      'https://custom-admin.onrender.com',
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: [
@@ -39,7 +43,7 @@ app.use(express.static(path.join(__dirname, '..', 'public', 'admin')));
 app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
 });
-app.get('/*', checkAuth, (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
 });
 
