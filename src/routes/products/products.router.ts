@@ -8,23 +8,46 @@ const createResponse = () => {};
 const validateProduct = () => {};
 
 productsRouter.get('/', async (req, res) => {
-  const products = await CatalogService.getProducts();
-  res.status(200).json(products);
+  try {
+    const products = await CatalogService.getProducts();
+    if (!products)
+      return res
+        .status(404)
+        .json({ success: false, message: 'No products data found' });
+    return res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: 'Something went wrong' });
+  }
 });
 
 productsRouter.get('/:id', async (req, res) => {
   try {
     const product = await CatalogService.getProductById(req.params.id);
-    res.status(200).json(product);
-  } catch (error) {}
+    if (!product)
+      return res
+        .status(404)
+        .json({ success: false, message: 'No product data found' });
+    res.status(200).json({ success: true, data: product });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: 'Something went wrong' });
+  }
 });
 
 productsRouter.post('/', async (req, res) => {
   try {
     const product = await CatalogService.saveProduct(req.body);
-    res.status(201).json(product);
+    return res.status(201).json({ success: true, data: product });
   } catch (error) {
-    res.status(503);
+    return res
+      .status(503)
+      .json({ success: false, message: 'Something went wrong' });
   }
 });
 productsRouter.put('/:id', async (req, res) => {
@@ -33,18 +56,22 @@ productsRouter.put('/:id', async (req, res) => {
       req.params.id,
       req.body as Partial<Product>
     );
-    res.status(200).json(updatedProduct);
+    return res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(503);
+    return res
+      .status(503)
+      .json({ success: false, message: 'Something went wrong' });
   }
 });
 
 productsRouter.delete('/:id', async (req, res) => {
   try {
     const removedProduct = await CatalogService.removeProduct(req.params.id);
-    res.status(200).json(removedProduct);
+    return res.status(200).json({ success: true, data: removedProduct });
   } catch (error) {
-    res.status(503);
+    return res
+      .status(503)
+      .json({ success: false, message: 'Something went wrong' });
   }
 });
 
