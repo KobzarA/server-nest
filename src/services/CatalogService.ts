@@ -1,5 +1,5 @@
 import ProductModel, { Product } from '../models/products/product.mongo';
-
+import { IProduct } from '../../../shared/src/types/models';
 class CatalogService {
   static async saveProduct(product: Product) {
     const item = await new ProductModel(product);
@@ -18,6 +18,15 @@ class CatalogService {
     return await ProductModel.findByIdAndUpdate(id, update, {
       new: true,
     }).exec();
+  }
+
+  static async updateManyProducts(products: Product[]) {
+    for (let i = 0; i++; i < products.length) {
+      await ProductModel.updateOne({ sku: products[i].sku }, products[i], {
+        upsert: true,
+      }).exec();
+    }
+    // return await ProductModel.updateMany({},products,{'upsert': true})
   }
 
   static async removeProduct(id: string) {
