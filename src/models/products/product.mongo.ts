@@ -16,9 +16,7 @@ const ProductSchema = new Schema<Product>(
     image: String,
     description: String,
   },
-  {
-    timestamps: true,
-  }
+  { id: true, timestamps: true }
 );
 
 const ProductModel = mongoose.model('Product', ProductSchema);

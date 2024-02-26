@@ -1,5 +1,5 @@
 import ProductModel, { Product } from '../models/products/product.mongo';
-import { IProduct } from '../../../shared/src/types/models';
+import { IProduct } from '../interfaces/models';
 class CatalogService {
   static async saveProduct(product: Product) {
     const item = await new ProductModel(product);
@@ -7,7 +7,10 @@ class CatalogService {
   }
 
   static async getProducts() {
-    return await ProductModel.find({}).exec();
+    return await ProductModel.find(
+      {},
+      { __v: false, createdAt: false, updatedAt: false }
+    ).exec();
   }
 
   static async getProductById(id: string) {

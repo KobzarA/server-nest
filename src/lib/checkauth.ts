@@ -30,7 +30,7 @@ const checkAuth = (req: Request, res: Response, next: NextFunction) => {
         });
       } else if (user.role === 'client')
         return res
-          .sendStatus(403)
+          .status(403)
           .send({ success: false, message: 'Access forbiden' });
       res.locals.user = user;
       return next();

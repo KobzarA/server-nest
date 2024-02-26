@@ -4,8 +4,7 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import app from '../app';
-
-import 'dotenv/config';
+import { config } from '../config';
 import { connectMongo } from '../lib/mongo';
 
 const PORT = process.env.PORT || 8000;
