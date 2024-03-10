@@ -11,10 +11,16 @@ interface IConfig {
 let config: dotenv.DotenvParseOutput | undefined;
 switch (process.env.NODE_ENV) {
   case 'production':
-    // console.log(path.resolve(process.cwd(), '.env.production'));
-    config = dotenv.config({
-      path: path.resolve(process.cwd(), 'server', '.env.production'),
-    }).parsed;
+    if (process.cwd().toString().includes('server')) {
+      config = dotenv.config({
+        path: './.env.production',
+      }).parsed;
+    } else {
+      config = dotenv.config({
+        path: path.resolve(process.cwd(), 'server', '.env.production'),
+      }).parsed;
+    }
+
     break;
   case 'development':
     config = dotenv.config({ path: '.env.development' }).parsed;
